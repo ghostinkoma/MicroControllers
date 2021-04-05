@@ -20,7 +20,7 @@
 #define DlayMinimun 110
 
 void setDefaltColor();
-void setColor1();
+void setColor();
 void Led_Scroll_UP();
 void Led_Scroll_DOWN();
 void SystemSetip();
@@ -40,40 +40,24 @@ volatile unsigned char * LED_B[LED_Length];
 
 void main(void){
     unsigned int delay_interval_count;
-    unsigned int delay_interval;
-    
+    unsigned int delay_interval = DlayMax;
     SystemSetip();
     setDefaltColor();
-    delay_interval = DlayMax;
-    Ptern =  0;
+    
     while (1){
         SendLED();
-        
-        for(delay_interval_count = 0;delay_interval > delay_interval_count; delay_interval_count++){
-            asm("nop");
-        }
+        for(delay_interval_count = 0;delay_interval > delay_interval_count; delay_interval_count++) asm("nop");
         if(delay_interval < DlayMinimun){
             delay_interval = DlayMax;
             if(UP_DOWN == DOWN){
                 asm("bsf    _UP_DOWN, 0");
-                if(Ptern == 0){
-                    setDefaltColor();
-                }else{
-                    setColor1();
-                }
+                if(Ptern == 0) setDefaltColor();
+                else setColor();
                 if(Ptern >6) Ptern =0; else Ptern ++;
-            }else{
-                asm("bcf    _UP_DOWN, 0");
-            }
-        }else{
-            delay_interval = delay_interval - DlayStep;
-        }
-        
-        if(UP_DOWN == UP){
-            Led_Scroll_UP();
-        }else{
-            Led_Scroll_DOWN();
-        }
+            }else asm("bcf    _UP_DOWN, 0");
+        }else delay_interval = delay_interval - DlayStep;
+        if(UP_DOWN == UP) Led_Scroll_UP();
+        else Led_Scroll_DOWN();
     }
 }
 
@@ -82,7 +66,7 @@ void SendLED(){
         LEDG_Value_Tmp = LED_G[Led_Index];
         LEDR_Value_Tmp = LED_R[Led_Index];
         LEDB_Value_Tmp = LED_B[Led_Index];
-        
+        //Send LED Red value    
         asm("bsf    _bitCount, 3");//	; 1
         asm("BitLoopG:");
         asm("BTFSC  _LEDG_Value_Tmp,7");
@@ -92,7 +76,7 @@ void SendLED(){
         asm("RLF    _LEDG_Value_Tmp,1");
         asm("decfsz	_bitCount, F");
         asm("GOTO	BitLoopG");
-
+        //Send LED Green value
         asm("bsf    _bitCount, 3");//	; 1
         asm("BitLoopR:");
         asm("BTFSC  _LEDR_Value_Tmp,7");
@@ -102,7 +86,7 @@ void SendLED(){
         asm("RLF    _LEDR_Value_Tmp,1");
         asm("decfsz	_bitCount, F");
         asm("GOTO	BitLoopR");
-
+        //Send LED Blue value
         asm("bsf    _bitCount, 3");//	; 1
         asm("BitLoopB:");
         asm("BTFSC  _LEDB_Value_Tmp,7");
@@ -130,7 +114,6 @@ void SystemSetip(){
 }
 
 void setDefaltColor(){
- 
     LED_G[0] = LED_B[0] = 
     LED_G[1] = 
     LED_G[2] = 
@@ -143,8 +126,6 @@ void setDefaltColor(){
     LED_R[2] = 20;
     
     LED_R[1] = LED_G[4] =  LED_G[7] = LED_B[7] =  LED_R[0] = LED_G[6] = 55;
-    
-    //= 65;
 
     LED_B[1] = LED_B[4] = LED_G[5] = LED_R[6] = 
     LED_R[8] = LED_G[8] = LED_B[8] = 100;
@@ -155,8 +136,7 @@ void setDefaltColor(){
     LED_B[3] = 255;
 }
 
-void setColor1(){
-
+void setColor(){
     LED_Value_Tmp = Ptern;
     asm("BTFSC	_LED_Value_Tmp,0"); 
     asm("GOTO   RedFF");
@@ -170,23 +150,23 @@ void setColor1(){
     
     asm("SetGreen:");
     asm("BTFSC	_LED_Value_Tmp,1"); 
-    asm("GOTO GreenFF");
-    asm("GOTO Green00");
+    asm("GOTO   GreenFF");
+    asm("GOTO   Green00");
     asm("GreenFF:");
     asm("MOVLW  0xFF");
     asm("MOVWF  _LEDG_Value_Tmp");
-    asm("GOTO SetBlue");
+    asm("GOTO   SetBlue");
     asm("Green00:");
     asm("CLRF    _LEDG_Value_Tmp");
     
     asm("SetBlue:");
     asm("BTFSC	_LED_Value_Tmp,2"); 
-    asm("GOTO BlueFF");
-    asm("GOTO Blue00");
+    asm("GOTO   BlueFF");
+    asm("GOTO    Blue00");
     asm("BlueFF:");
     asm("MOVLW  0xFF");
     asm("MOVWF  _LEDB_Value_Tmp");
-    asm("GOTO endOfColorset");
+    asm("GOTO   endOfColorset");
     asm("Blue00:");
     asm("CLRF    _LEDB_Value_Tmp");
 
