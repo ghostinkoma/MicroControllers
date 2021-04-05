@@ -162,13 +162,13 @@ void setColor(){
     asm("SetBlue:");
     asm("BTFSC	_LED_Value_Tmp,2"); 
     asm("GOTO   BlueFF");
-    asm("GOTO    Blue00");
+    asm("GOTO   Blue00");
     asm("BlueFF:");
     asm("MOVLW  0xFF");
     asm("MOVWF  _LEDB_Value_Tmp");
     asm("GOTO   endOfColorset");
     asm("Blue00:");
-    asm("CLRF    _LEDB_Value_Tmp");
+    asm("CLRF   _LEDB_Value_Tmp");
 
     asm("endOfColorset:");
     for(unsigned char i=0;i <LED_Length;i++){
@@ -184,11 +184,10 @@ void setColor(){
 }
 
 void Led_Scroll_UP(){
-    unsigned char i;
     LEDR_Value_Tmp = LED_R[0];
     LEDG_Value_Tmp = LED_G[0];
     LEDB_Value_Tmp = LED_B[0];
-    for(i = 0 ;i <  LED_Length ;i++){
+    for(unsigned char i = 0 ;i <  LED_Length ;i++){
         LED_R[i] = LED_R[i + 1];
         LED_G[i] = LED_G[i + 1];
         LED_B[i] = LED_B[i + 1];
@@ -199,11 +198,10 @@ void Led_Scroll_UP(){
 }
 
 void Led_Scroll_DOWN(){
-    unsigned char i;
     LEDR_Value_Tmp = LED_R[9];
     LEDG_Value_Tmp = LED_G[9];
     LEDB_Value_Tmp = LED_B[9];
-    for(i = LED_Length-1 ;i >  0 ;i--){
+    for(unsigned char i = LED_Length-1 ;i >  0 ;i--){
         LED_R[i] = LED_R[i - 1];
         LED_G[i] = LED_G[i - 1];
         LED_B[i] = LED_B[i - 1];
