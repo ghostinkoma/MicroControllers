@@ -3,6 +3,8 @@
  * Author:  ghostinkoma
  * Comments: 
  * Revision history:  first relase
+ * Drive Voltage 3.3 to 5.25
+ * LED data port is POARTA,2
  */
 
 #include <xc.h> // include processor files - each processor file is guarded.  
