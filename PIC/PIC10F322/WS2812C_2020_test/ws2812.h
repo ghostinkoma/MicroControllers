@@ -3,13 +3,13 @@
  * Author:  ghostinkoma
  * Comments: 
  * Revision history:  first relase
- * Drive Voltage 3.3 to 5.25
- * LED data port is POARTA,2
  */
 
 #include <xc.h> // include processor files - each processor file is guarded.  
 
 #define LED_Length 10
+#define LED_cont_Pin_On  asm("BSF	PORTA,2"); 
+#define LED_cont_Pin_Off asm("BCF	PORTA,2");
 
 volatile unsigned char * LED_R[LED_Length];
 volatile unsigned char * LED_G[LED_Length];
@@ -37,9 +37,9 @@ void SendLED(){
         asm("bsf    _bitCount, 3");//	; 1
         asm("BitLoopG:");
         asm("BTFSC  _LEDG_Value_Tmp,7");
-        asm("BSF	PORTA,2"); 
-        asm("BSF	PORTA,2"); 
-        asm("BCF	PORTA,2");
+        LED_cont_Pin_On 
+        LED_cont_Pin_On
+        LED_cont_Pin_Off
         asm("RLF    _LEDG_Value_Tmp,1");
         asm("decfsz	_bitCount, F");
         asm("GOTO	BitLoopG");
@@ -47,9 +47,9 @@ void SendLED(){
         asm("bsf    _bitCount, 3");//	; 1
         asm("BitLoopR:");
         asm("BTFSC  _LEDR_Value_Tmp,7");
-        asm("BSF	PORTA,2"); 
-        asm("BSF	PORTA,2"); 
-        asm("BCF	PORTA,2");
+        LED_cont_Pin_On 
+        LED_cont_Pin_On
+        LED_cont_Pin_Off
         asm("RLF    _LEDR_Value_Tmp,1");
         asm("decfsz	_bitCount, F");
         asm("GOTO	BitLoopR");
@@ -57,9 +57,9 @@ void SendLED(){
         asm("bsf    _bitCount, 3");//	; 1
         asm("BitLoopB:");
         asm("BTFSC  _LEDB_Value_Tmp,7");
-        asm("BSF	PORTA,2"); 
-        asm("BSF	PORTA,2"); 
-        asm("BCF	PORTA,2");
+        LED_cont_Pin_On
+        LED_cont_Pin_On
+        LED_cont_Pin_Off
         asm("RLF    _LEDB_Value_Tmp,1");
         asm("decfsz	_bitCount, F");
         asm("GOTO	BitLoopB");
