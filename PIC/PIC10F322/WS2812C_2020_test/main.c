@@ -7,13 +7,13 @@
 
 #include<xc.h>
 #include"ws2812.h" 
+
 #pragma config FOSC = INTOSC    // Oscillator Selection (INTOSC oscillator: I/O function on CLKIN pin)
 #pragma config WDTE = OFF       // Watchdog Timer Enable (WDT disabled)
 #pragma config PWRTE = OFF      // Power-up Timer Enable (PWRT disabled)
 #pragma config MCLRE = OFF      // MCLR Pin Function Select (MCLR/VPP pin function is digital input)
 #pragma config CP = OFF         // Flash Program Memory Code Protection (Program memory code protection is disabled)
 #pragma config BOREN = ON       // Brown-out Reset Enable (Brown-out Reset enabled)
-
 // CONFIG2
 #pragma config WRT = OFF        // Flash Memory Self-Write Protection (Write protection off)
 #pragma config BORV = LO        // Brown-out Reset Voltage Selection (Brown-out Reset Voltage (Vbor), low trip point selected.)
@@ -26,7 +26,7 @@
 #define DelayMinum 100
 
 volatile unsigned char Ptern = 0;
-volatile unsigned char UP_DOWN = UP;
+volatile unsigned char UP_DOWN = DOWN;
 
 void setDefaltColor();
 void setColor();
@@ -34,40 +34,24 @@ void SystemSetup();
 
 void main(void){
     unsigned int delay_interval_count;
-    unsigned int delay_interval;
+    unsigned int delay_interval  = DelayMax;
     
     SystemSetup();
-    setDefaltColor();
-    delay_interval = DelayMax;
-    Ptern =  0;
+ 
     while (1){
         SendLED();
-        for(delay_interval_count = 0;delay_interval > delay_interval_count; delay_interval_count++){
-            asm("nop");
-        }
+        for(delay_interval_count = 0;delay_interval > delay_interval_count; delay_interval_count++) asm("nop");
         if(delay_interval < DelayMinum){
             delay_interval = DelayMax;
             if(UP_DOWN == DOWN){
-                if(Ptern >6) Ptern =0; else Ptern ++;
                 asm("bsf    _UP_DOWN, 0");
-                
-                if(Ptern == 0){
-                    setDefaltColor();
-                }else{
-                    setColor();
-                }
-            }else{
-                asm("bcf    _UP_DOWN, 0");
-            }
-        }else{
-            delay_interval = delay_interval - DelayStep;
-        }
-        
-        if(UP_DOWN == UP){
-            Led_Scroll_UP();
-        }else{
-            Led_Scroll_DOWN();
-        }
+                if(Ptern == 0) setDefaltColor();
+                else setColor();
+                if(Ptern >6) Ptern =0; else Ptern ++;
+            }else asm("bcf    _UP_DOWN, 0");
+        }else delay_interval = delay_interval - DelayStep;
+        if(UP_DOWN == UP) Led_Scroll_UP();
+        else Led_Scroll_DOWN();
     }
 }
 
