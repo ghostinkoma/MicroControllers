@@ -7,7 +7,10 @@
 
 #include <xc.h> // include processor files - each processor file is guarded.  
 
+//toDO set your LED strip length
 #define LED_Length 10
+
+//toDo Set your out put pin for LED control. can't set MCLR pin.
 #define LED_cont_Pin_On  asm("BSF	PORTA,2"); 
 #define LED_cont_Pin_Off asm("BCF	PORTA,2");
 
