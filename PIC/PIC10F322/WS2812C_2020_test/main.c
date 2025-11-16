@@ -1,7 +1,7 @@
 /* Build on MPLAB IDE 5.35 xc8 2.32
  * File:   ws2812.h
  * Author:  ghostinkoma
- * Comments: 
+ * Comments: For PIC10F322@16Mhz(4M DMIPS)
  * Revision history:  first relase
  */
 
